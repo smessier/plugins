@@ -18,10 +18,12 @@ var _ = Service("calc", func() {
 			Attribute("a", Int, func() {
 				Description("Left operand")
 				Example(1)
+				Meta("rpc:tag", "1")
 			})
 			Attribute("b", Int, func() {
 				Description("Right operand")
 				Example(2)
+				Meta("rpc:tag", "2")
 			})
 			Required("a", "b")
 		})
@@ -34,5 +36,6 @@ var _ = Service("calc", func() {
 
 			Response(StatusOK)
 		})
+		GRPC(func() {})
 	})
 })

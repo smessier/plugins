@@ -30,3 +30,13 @@ test-plugins:
 	@for p in $(PLUGINS) ; do \
 		make -C $$p || exit 1; \
 	done
+
+build-examples:
+	@for p in $(PLUGINS) ; do \
+		make -C $$p build-examples || exit 1; \
+	done
+
+clean:
+	@for p in $(PLUGINS) ; do \
+		make -C $$p clean || exit 1; \
+	done
