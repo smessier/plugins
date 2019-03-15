@@ -12,7 +12,7 @@ import (
 	"context"
 
 	goagrpc "goa.design/goa/grpc"
-	calcsvc "goa.design/plugins/goakit/examples/calc/gen/calc"
+	calc "goa.design/plugins/goakit/examples/calc/gen/calc"
 	calcpb "goa.design/plugins/goakit/examples/calc/gen/grpc/calc/pb"
 	"google.golang.org/grpc/metadata"
 )
@@ -38,7 +38,7 @@ func DecodeAddRequest(ctx context.Context, v interface{}, md metadata.MD) (inter
 			return nil, goagrpc.ErrInvalidType("calc", "add", "*calcpb.AddRequest", v)
 		}
 	}
-	var payload *calcsvc.AddPayload
+	var payload *calc.AddPayload
 	{
 		payload = NewAddPayload(message)
 	}

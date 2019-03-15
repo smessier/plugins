@@ -16,7 +16,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	goahttp "goa.design/goa/http"
-	archiversvcc "goa.design/plugins/goakit/examples/fetcher/archiver/gen/http/archiver/client"
+	archiverc "goa.design/plugins/goakit/examples/fetcher/archiver/gen/http/archiver/client"
 	healthc "goa.design/plugins/goakit/examples/fetcher/archiver/gen/http/health/client"
 )
 
@@ -141,14 +141,14 @@ func ParseEndpoint(
 	{
 		switch svcn {
 		case "archiver":
-			c := archiversvcc.NewClient(scheme, host, doer, enc, dec, restore)
+			c := archiverc.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
 			case "archive":
 				endpoint = c.Archive()
-				data, err = archiversvcc.BuildArchivePayload(*archiverArchiveBodyFlag)
+				data, err = archiverc.BuildArchivePayload(*archiverArchiveBodyFlag)
 			case "read":
 				endpoint = c.Read()
-				data, err = archiversvcc.BuildReadPayload(*archiverReadIDFlag)
+				data, err = archiverc.BuildReadPayload(*archiverReadIDFlag)
 			}
 		case "health":
 			c := healthc.NewClient(scheme, host, doer, enc, dec, restore)

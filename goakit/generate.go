@@ -8,6 +8,7 @@ import (
 	"goa.design/goa/codegen"
 	"goa.design/goa/eval"
 	"goa.design/goa/expr"
+	grpccodegen "goa.design/goa/grpc/codegen"
 	httpcodegen "goa.design/goa/http/codegen"
 )
 
@@ -24,6 +25,7 @@ func Generate(genpkg string, roots []eval.Root, files []*codegen.File) ([]*codeg
 		if r, ok := root.(*expr.RootExpr); ok {
 			files = append(files, EncodeDecodeFiles(genpkg, r)...)
 			files = append(files, MountFiles(r)...)
+			files = append(files, ServerFiles(genpkg, r)...)
 		}
 	}
 	return files, nil
@@ -37,6 +39,20 @@ func Generate(genpkg string, roots []eval.Root, files []*codegen.File) ([]*codeg
 func Goakitify(genpkg string, roots []eval.Root, files []*codegen.File) ([]*codegen.File, error) {
 	for _, f := range files {
 		goakitify(f)
+		for _, s := range f.SectionTemplates {
+			// Don't generate the server and handler init functions in gRPC server
+			// package since we generate the same in the kit server package.
+			if s.Name == "server-init" {
+				if _, ok := s.Data.(*grpccodegen.ServiceData); ok {
+					s.Source = ""
+				}
+			}
+			if s.Name == "handler-init" {
+				if _, ok := s.Data.(*grpccodegen.EndpointData); ok {
+					s.Source = ""
+				}
+			}
+		}
 	}
 	return files, nil
 }
@@ -93,7 +109,7 @@ func gokitifyExampleServer(genpkg string, file *codegen.File) {
 		case "server-main-logger":
 			codegen.AddImport(file.SectionTemplates[0], &codegen.ImportSpec{Path: "github.com/go-kit/kit/log"})
 			s.Source = gokitLoggerT
-		case "server-http-logger":
+		case "server-http-logger", "server-grpc-logger":
 			s.Source = ""
 		case "server-http-middleware":
 			s.Source = strings.Replace(s.Source, "adapter", "logger", -1)
@@ -103,13 +119,24 @@ func gokitifyExampleServer(genpkg string, file *codegen.File) {
 			data := s.Data.(map[string]interface{})
 			svcs := data["Services"].([]*httpcodegen.ServiceData)
 			for _, svc := range svcs {
-				pkgName := httpcodegen.HTTPServices.Get(svc.Service.Name).Service.PkgName
 				codegen.AddImport(file.SectionTemplates[0], &codegen.ImportSpec{
-					Path: path.Join(genpkg, "http", svc.Service.Name, "kitserver"),
-					Name: pkgName + "kitsvr",
+					Path: path.Join(genpkg, "http", codegen.SnakeCase(svc.Service.VarName), "kitserver"),
+					Name: svc.Service.PkgName + "kitsvr",
 				})
 			}
-			s.Source = gokitServerInitT
+			s.Source = gokitHTTPServerInitT
+		case "server-grpc-init":
+			data := s.Data.(map[string]interface{})
+			svcs := data["Services"].([]*grpccodegen.ServiceData)
+			for _, svc := range svcs {
+				codegen.AddImport(file.SectionTemplates[0], &codegen.ImportSpec{
+					Path: path.Join(genpkg, "grpc", codegen.SnakeCase(svc.Service.VarName), "kitserver"),
+					Name: svc.Service.PkgName + "kitsvr",
+				})
+			}
+			s.Source = strings.Replace(s.Source, "svr.New", "kitsvr.New", -1)
+		case "server-grpc-register":
+			s.Source = strings.Replace(s.Source, "adapter", "logger", -1)
 		}
 	}
 	if hasLogger {
@@ -139,7 +166,7 @@ const gokitLoggerT = `
   }
 `
 
-const gokitServerInitT = `
+const gokitHTTPServerInitT = `
   // Wrap the endpoints with the transport specific layers. The generated
   // server packages contains code generated from the design which maps
   // the service input and output data structures to HTTP requests and

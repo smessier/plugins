@@ -11,10 +11,8 @@ package server
 import (
 	"context"
 
-	"github.com/go-kit/kit/endpoint"
 	"goa.design/goa"
 	goagrpc "goa.design/goa/grpc"
-	calcsvc "goa.design/plugins/goakit/examples/calc/gen/calc"
 	calcpb "goa.design/plugins/goakit/examples/calc/gen/grpc/calc/pb"
 )
 
@@ -27,22 +25,6 @@ type Server struct {
 // exposes the name of the error as defined in the expr.
 type ErrorNamer interface {
 	ErrorName() string
-}
-
-// New instantiates the server struct with the calc service endpoints.
-func New(e *calcsvc.Endpoints, uh goagrpc.UnaryHandler) *Server {
-	return &Server{
-		AddH: NewAddHandler(e.Add, uh),
-	}
-}
-
-// NewAddHandler creates a gRPC handler which serves the "calc" service "add"
-// endpoint.
-func NewAddHandler(endpoint endpoint.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
-	if h == nil {
-		h = goagrpc.NewUnaryHandler(endpoint, DecodeAddRequest, EncodeAddResponse)
-	}
-	return h
 }
 
 // Add implements the "Add" method in calcpb.CalcServer interface.

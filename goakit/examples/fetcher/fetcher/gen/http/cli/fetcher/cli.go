@@ -16,7 +16,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	goahttp "goa.design/goa/http"
-	fetchersvcc "goa.design/plugins/goakit/examples/fetcher/fetcher/gen/http/fetcher/client"
+	fetcherc "goa.design/plugins/goakit/examples/fetcher/fetcher/gen/http/fetcher/client"
 	healthc "goa.design/plugins/goakit/examples/fetcher/fetcher/gen/http/health/client"
 )
 
@@ -138,11 +138,11 @@ func ParseEndpoint(
 				data = nil
 			}
 		case "fetcher":
-			c := fetchersvcc.NewClient(scheme, host, doer, enc, dec, restore)
+			c := fetcherc.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
 			case "fetch":
 				endpoint = c.Fetch()
-				data, err = fetchersvcc.BuildFetchPayload(*fetcherFetchURLFlag)
+				data, err = fetcherc.BuildFetchPayload(*fetcherFetchURLFlag)
 			}
 		}
 	}

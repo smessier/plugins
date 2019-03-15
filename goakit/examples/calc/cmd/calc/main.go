@@ -11,8 +11,8 @@ import (
 	"sync"
 
 	"github.com/go-kit/kit/log"
-	calc "goa.design/plugins/goakit/examples/calc"
-	calcsvc "goa.design/plugins/goakit/examples/calc/gen/calc"
+	calcapi "goa.design/plugins/goakit/examples/calc"
+	calc "goa.design/plugins/goakit/examples/calc/gen/calc"
 )
 
 func main() {
@@ -22,6 +22,7 @@ func main() {
 		hostF     = flag.String("host", "localhost", "Server host (valid values: localhost)")
 		domainF   = flag.String("domain", "", "Host domain name (overrides host domain specified in service design)")
 		httpPortF = flag.String("http-port", "", "HTTP port (overrides host HTTP port specified in service design)")
+		grpcPortF = flag.String("grpc-port", "", "gRPC port (overrides host gRPC port specified in service design)")
 		secureF   = flag.Bool("secure", false, "Use secure scheme (https or grpcs)")
 		dbgF      = flag.Bool("debug", false, "Log request and response bodies")
 	)
@@ -39,19 +40,19 @@ func main() {
 
 	// Initialize the services.
 	var (
-		calcSvc calcsvc.Service
+		calcSvc calc.Service
 	)
 	{
-		calcSvc = calc.NewCalc(logger)
+		calcSvc = calcapi.NewCalc(logger)
 	}
 
 	// Wrap the services in endpoints that can be invoked from other services
 	// potentially running in different processes.
 	var (
-		calcEndpoints *calcsvc.Endpoints
+		calcEndpoints *calc.Endpoints
 	)
 	{
-		calcEndpoints = calcsvc.NewEndpoints(calcSvc)
+		calcEndpoints = calc.NewEndpoints(calcSvc)
 	}
 
 	// Create channel used by both the signal handler and server goroutines
@@ -92,6 +93,28 @@ func main() {
 				u.Host += ":80"
 			}
 			handleHTTPServer(ctx, u, calcEndpoints, &wg, errc, logger, *dbgF)
+		}
+
+		{
+			addr := "grpc://localhost:8080"
+			u, err := url.Parse(addr)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "invalid URL %#v: %s", addr, err)
+				os.Exit(1)
+			}
+			if *secureF {
+				u.Scheme = "grpcs"
+			}
+			if *domainF != "" {
+				u.Host = *domainF
+			}
+			if *grpcPortF != "" {
+				h := strings.Split(u.Host, ":")[0]
+				u.Host = h + ":" + *grpcPortF
+			} else if u.Port() == "" {
+				u.Host += ":8080"
+			}
+			handleGRPCServer(ctx, u, calcEndpoints, &wg, errc, logger, *dbgF)
 		}
 
 	default:

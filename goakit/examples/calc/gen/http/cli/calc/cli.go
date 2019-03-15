@@ -16,7 +16,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	goahttp "goa.design/goa/http"
-	calcsvcc "goa.design/plugins/goakit/examples/calc/gen/http/calc/client"
+	calcc "goa.design/plugins/goakit/examples/calc/gen/http/calc/client"
 )
 
 // UsageCommands returns the set of commands and sub-commands using the format
@@ -113,11 +113,11 @@ func ParseEndpoint(
 	{
 		switch svcn {
 		case "calc":
-			c := calcsvcc.NewClient(scheme, host, doer, enc, dec, restore)
+			c := calcc.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
 			case "add":
 				endpoint = c.Add()
-				data, err = calcsvcc.BuildAddPayload(*calcAddAFlag, *calcAddBFlag)
+				data, err = calcc.BuildAddPayload(*calcAddAFlag, *calcAddBFlag)
 			}
 		}
 	}

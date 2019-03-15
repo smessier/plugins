@@ -14,12 +14,12 @@ import (
 	"strconv"
 
 	goa "goa.design/goa"
-	archiversvc "goa.design/plugins/goakit/examples/fetcher/archiver/gen/archiver"
+	archiver "goa.design/plugins/goakit/examples/fetcher/archiver/gen/archiver"
 )
 
 // BuildArchivePayload builds the payload for the archiver archive endpoint
 // from CLI flags.
-func BuildArchivePayload(archiverArchiveBody string) (*archiversvc.ArchivePayload, error) {
+func BuildArchivePayload(archiverArchiveBody string) (*archiver.ArchivePayload, error) {
 	var err error
 	var body ArchiveRequestBody
 	{
@@ -37,7 +37,7 @@ func BuildArchivePayload(archiverArchiveBody string) (*archiversvc.ArchivePayloa
 	if err != nil {
 		return nil, err
 	}
-	v := &archiversvc.ArchivePayload{
+	v := &archiver.ArchivePayload{
 		Status: body.Status,
 		Body:   body.Body,
 	}
@@ -46,7 +46,7 @@ func BuildArchivePayload(archiverArchiveBody string) (*archiversvc.ArchivePayloa
 
 // BuildReadPayload builds the payload for the archiver read endpoint from CLI
 // flags.
-func BuildReadPayload(archiverReadID string) (*archiversvc.ReadPayload, error) {
+func BuildReadPayload(archiverReadID string) (*archiver.ReadPayload, error) {
 	var err error
 	var id int
 	{
@@ -66,7 +66,7 @@ func BuildReadPayload(archiverReadID string) (*archiversvc.ReadPayload, error) {
 	if err != nil {
 		return nil, err
 	}
-	payload := &archiversvc.ReadPayload{
+	payload := &archiver.ReadPayload{
 		ID: id,
 	}
 	return payload, nil

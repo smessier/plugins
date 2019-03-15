@@ -14,7 +14,7 @@ import (
 	"os"
 
 	"github.com/go-kit/kit/endpoint"
-	calcsvcc "goa.design/plugins/goakit/examples/calc/gen/grpc/calc/client"
+	calcc "goa.design/plugins/goakit/examples/calc/gen/grpc/calc/client"
 	grpc "google.golang.org/grpc"
 )
 
@@ -108,11 +108,11 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (endpoint.Endpo
 	{
 		switch svcn {
 		case "calc":
-			c := calcsvcc.NewClient(cc, opts...)
+			c := calcc.NewClient(cc, opts...)
 			switch epn {
 			case "add":
 				endpoint = c.Add()
-				data, err = calcsvcc.BuildAddPayload(*calcAddMessageFlag)
+				data, err = calcc.BuildAddPayload(*calcAddMessageFlag)
 			}
 		}
 	}

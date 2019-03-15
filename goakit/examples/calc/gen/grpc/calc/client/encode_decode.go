@@ -12,7 +12,7 @@ import (
 	"context"
 
 	goagrpc "goa.design/goa/grpc"
-	calcsvc "goa.design/plugins/goakit/examples/calc/gen/calc"
+	calc "goa.design/plugins/goakit/examples/calc/gen/calc"
 	calcpb "goa.design/plugins/goakit/examples/calc/gen/grpc/calc/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -31,9 +31,9 @@ func BuildAddFunc(grpccli calcpb.CalcClient, cliopts ...grpc.CallOption) goagrpc
 
 // EncodeAddRequest encodes requests sent to calc add endpoint.
 func EncodeAddRequest(ctx context.Context, v interface{}, md *metadata.MD) (interface{}, error) {
-	payload, ok := v.(*calcsvc.AddPayload)
+	payload, ok := v.(*calc.AddPayload)
 	if !ok {
-		return nil, goagrpc.ErrInvalidType("calc", "add", "*calcsvc.AddPayload", v)
+		return nil, goagrpc.ErrInvalidType("calc", "add", "*calc.AddPayload", v)
 	}
 	return NewAddRequest(payload), nil
 }
@@ -44,6 +44,6 @@ func DecodeAddResponse(ctx context.Context, v interface{}, hdr, trlr metadata.MD
 	if !ok {
 		return nil, goagrpc.ErrInvalidType("calc", "add", "*calcpb.AddResponse", v)
 	}
-	res := NewAddResponse(message)
+	res := NewAddResult(message)
 	return res, nil
 }
