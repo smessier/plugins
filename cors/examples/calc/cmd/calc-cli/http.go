@@ -2,11 +2,10 @@ package main
 
 import (
 	"net/http"
-	"os"
 	"time"
 
-	"goa.design/goa"
-	goahttp "goa.design/goa/http"
+	goa "goa.design/goa/v3"
+	goahttp "goa.design/goa/v3/http"
 	cli "goa.design/plugins/cors/examples/calc/gen/http/cli/calc"
 )
 
@@ -18,7 +17,6 @@ func doHTTP(scheme, host string, timeout int, debug bool) (goa.Endpoint, interfa
 		doer = &http.Client{Timeout: time.Duration(timeout) * time.Second}
 		if debug {
 			doer = goahttp.NewDebugDoer(doer)
-			doer.(goahttp.DebugDoer).Fprint(os.Stderr)
 		}
 	}
 
@@ -31,6 +29,7 @@ func doHTTP(scheme, host string, timeout int, debug bool) (goa.Endpoint, interfa
 		debug,
 	)
 }
+
 func httpUsageCommands() string {
 	return cli.UsageCommands()
 }

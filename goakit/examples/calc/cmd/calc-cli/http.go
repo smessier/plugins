@@ -2,11 +2,10 @@ package main
 
 import (
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/go-kit/kit/endpoint"
-	goahttp "goa.design/goa/http"
+	goahttp "goa.design/goa/v3/http"
 	cli "goa.design/plugins/goakit/examples/calc/gen/http/cli/calc"
 )
 
@@ -18,7 +17,6 @@ func doHTTP(scheme, host string, timeout int, debug bool) (endpoint.Endpoint, in
 		doer = &http.Client{Timeout: time.Duration(timeout) * time.Second}
 		if debug {
 			doer = goahttp.NewDebugDoer(doer)
-			doer.(goahttp.DebugDoer).Fprint(os.Stderr)
 		}
 	}
 
@@ -31,6 +29,7 @@ func doHTTP(scheme, host string, timeout int, debug bool) (endpoint.Endpoint, in
 		debug,
 	)
 }
+
 func httpUsageCommands() string {
 	return cli.UsageCommands()
 }

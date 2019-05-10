@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"goa.design/goa"
+	goa "goa.design/goa/v3"
 )
 
 func main() {
@@ -85,7 +85,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if data != nil && !debug {
+	if data != nil {
 		m, _ := json.MarshalIndent(data, "", "    ")
 		fmt.Println(string(m))
 	}
