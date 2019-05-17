@@ -1,7 +1,7 @@
 # goakit plugin example
 
-This example shows how to use the [Goa](https://goa.design) [goakit](https://github.com/goadesign/plugins/tree/master/goakit) to
-create a [Go kit](http://gokit.io) microservice.
+This example shows how to use the [Goa](https://goa.design) [goakit](https://github.com/goadesign/plugins/tree/master/goakit)
+plugin to create a [Go kit](http://gokit.io) microservice.
 
 ## Installation
 
