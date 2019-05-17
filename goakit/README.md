@@ -12,7 +12,7 @@ package name:
 package design
 
 import . "goa.design/goa/v3/dsl"
-import _ "goa.design/plugins/goakit" # Enables goakit
+import _ "goa.design/plugins/goakit" // Enables goakit
 
 var _ = API("...
 ```
