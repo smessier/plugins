@@ -3,8 +3,8 @@
 // calc HTTP client encoders and decoders
 //
 // Command:
-// $ goa gen goa.design/plugins/zaplogger/examples/calc/design -o
-// $(GOPATH)/src/goa.design/plugins/zaplogger/examples/calc
+// $ goa gen goa.design/plugins/v3/zaplogger/examples/calc/design -o
+// $(GOPATH)/src/goa.design/plugins/v3/zaplogger/examples/calc
 
 package client
 
@@ -16,7 +16,7 @@ import (
 	"net/url"
 
 	goahttp "goa.design/goa/v3/http"
-	calc "goa.design/plugins/zaplogger/examples/calc/gen/calc"
+	calc "goa.design/plugins/v3/zaplogger/examples/calc/gen/calc"
 )
 
 // BuildAddRequest instantiates a HTTP request object with method and path set

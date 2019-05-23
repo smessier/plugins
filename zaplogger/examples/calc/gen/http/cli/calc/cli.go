@@ -3,8 +3,8 @@
 // calc HTTP client CLI support package
 //
 // Command:
-// $ goa gen goa.design/plugins/zaplogger/examples/calc/design -o
-// $(GOPATH)/src/goa.design/plugins/zaplogger/examples/calc
+// $ goa gen goa.design/plugins/v3/zaplogger/examples/calc/design -o
+// $(GOPATH)/src/goa.design/plugins/v3/zaplogger/examples/calc
 
 package cli
 
@@ -16,7 +16,7 @@ import (
 
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
-	calcc "goa.design/plugins/zaplogger/examples/calc/gen/http/calc/client"
+	calcc "goa.design/plugins/v3/zaplogger/examples/calc/gen/http/calc/client"
 )
 
 // UsageCommands returns the set of commands and sub-commands using the format
